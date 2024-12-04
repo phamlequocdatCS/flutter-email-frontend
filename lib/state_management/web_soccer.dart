@@ -45,7 +45,7 @@ class WebSocketService {
 
   void _initializeWebSocket(String sessionToken) {
     _channel = WebSocketChannel.connect(
-      Uri.parse('ws://$ROOT/ws/emails/?token=$sessionToken'),
+      Uri.parse('wss://$ROOT/ws/emails/?token=$sessionToken'),
     );
 
     print('WebSocket connection established');
