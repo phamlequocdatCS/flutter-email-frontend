@@ -63,12 +63,12 @@ const String ROOT = kIsWeb
     : "10.0.2.2:8000"; // Android
 
 const String API_ROOT = kIsWeb
-    ? "http://$ROOT" // Web
-    : "http://$ROOT"; // Android
+    ? "https://$ROOT" // Web
+    : "https://$ROOT"; // Android
 
 const String mediaServer = kIsWeb
-    ? "http://$ROOT" // Web
-    : "http://$ROOT"; // Android
+    ? "https://$ROOT" // Web
+    : "https://$ROOT"; // Android
 
 enum API_Endpoints {
   AUTH_REGISTER("$API_ROOT/auth/register/"),
