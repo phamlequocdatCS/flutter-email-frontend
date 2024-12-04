@@ -103,7 +103,7 @@ enum API_Endpoints {
 }
 
 String getUserProfileImageURL(String url) {
-  return "${API_Endpoints.GET_IMAGE.value}$url";
+  return url;
 }
 
 String getAttachmentURL(String url) {
