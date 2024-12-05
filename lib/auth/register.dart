@@ -25,6 +25,7 @@ class _GmailRegisterScreenState extends State<GmailRegisterScreen> {
 
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  Map<String, List<String>> _errors = {};
 
   @override
   void dispose() {
@@ -68,6 +69,21 @@ class _GmailRegisterScreenState extends State<GmailRegisterScreen> {
                   getConfirmPasswordField(context),
                   const SizedBox(height: 24),
                   getRegisterButton(context),
+                  if (_errors.isNotEmpty)
+                    Column(
+                      children: _errors.entries
+                          .map((entry) => Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: entry.value
+                                    .map((error) => Text(
+                                          error,
+                                          style: const TextStyle(
+                                              color: Colors.red),
+                                        ))
+                                    .toList(),
+                              ))
+                          .toList(),
+                    ),
                 ],
               ),
             ),
@@ -79,7 +95,7 @@ class _GmailRegisterScreenState extends State<GmailRegisterScreen> {
 
   ElevatedButton getRegisterButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
+      onPressed: () async {
         if (_formKey.currentState!.validate()) {
           final firstName = _nameController.text;
           final lastName = _surnameController.text;
@@ -88,11 +104,14 @@ class _GmailRegisterScreenState extends State<GmailRegisterScreen> {
           final password = _passwordController.text;
           final password2 = _confirmPasswordController.text;
 
+          setState(() {
+            _isLoading = true;
+          });
+
           try {
-            setState(() {
-              _isLoading = true;
-            });
-            Provider.of<AccountProvider>(context, listen: false).register(
+            final errors =
+                await Provider.of<AccountProvider>(context, listen: false)
+                    .register(
               firstName: firstName,
               lastName: lastName,
               email: email,
@@ -100,6 +119,17 @@ class _GmailRegisterScreenState extends State<GmailRegisterScreen> {
               password: password,
               password2: password2,
             );
+
+            if (errors.isNotEmpty) {
+              setState(() {
+                _errors = errors;
+              });
+            } else {
+              Navigator.pushReplacementNamed(
+                context,
+                AuthRoutes.LOGIN.value,
+              );
+            }
           } catch (e) {
             showSnackBar(
               context,
@@ -110,11 +140,6 @@ class _GmailRegisterScreenState extends State<GmailRegisterScreen> {
               _isLoading = false;
             });
           }
-
-          Navigator.pushReplacementNamed(
-            context,
-            AuthRoutes.LOGIN.value,
-          );
         }
       },
       style: ElevatedButton.styleFrom(

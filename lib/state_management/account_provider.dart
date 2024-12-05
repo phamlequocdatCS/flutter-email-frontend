@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart';
@@ -172,7 +173,7 @@ class AccountProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> register({
+  Future<Map<String, List<String>>> register({
     required String firstName,
     required String lastName,
     required String email,
@@ -180,7 +181,7 @@ class AccountProvider extends ChangeNotifier {
     required String password,
     required String password2,
   }) async {
-    await makeAPIRequest(
+    final response = await makeAPIRequest(
       url: Uri.parse(API_Endpoints.AUTH_REGISTER.value),
       method: 'POST',
       requiresAuth: false,
@@ -193,6 +194,17 @@ class AccountProvider extends ChangeNotifier {
         'password2': password2,
       },
     );
+
+    if (response.statusCode == 201) {
+      return {};
+    } else {
+      final Map<String, dynamic> errorResponse = jsonDecode(response.body);
+      final Map<String, List<String>> errors = {};
+      errorResponse.forEach((key, value) {
+        errors[key] = List<String>.from(value);
+      });
+      return errors;
+    }
   }
 
   Future<void> updateProfile({
