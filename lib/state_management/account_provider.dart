@@ -181,29 +181,51 @@ class AccountProvider extends ChangeNotifier {
     required String password,
     required String password2,
   }) async {
-    final response = await makeAPIRequest(
-      url: Uri.parse(API_Endpoints.AUTH_REGISTER.value),
-      method: 'POST',
-      requiresAuth: false,
-      body: {
-        'first_name': firstName,
-        'last_name': lastName,
-        'email': email,
-        'phone_number': phoneNumber,
-        'password': password,
-        'password2': password2,
-      },
-    );
+    try {
+      print('Attempting registration with:');
+      print('First Name: $firstName');
+      print('Last Name: $lastName');
+      print('Email: $email');
+      print('Phone Number: $phoneNumber');
 
-    if (response.statusCode == 201) {
-      return {};
-    } else {
-      final Map<String, dynamic> errorResponse = jsonDecode(response.body);
-      final Map<String, List<String>> errors = {};
-      errorResponse.forEach((key, value) {
-        errors[key] = List<String>.from(value);
-      });
-      return errors;
+      final responseData = await makeAPIRequest(
+        url: Uri.parse(API_Endpoints.AUTH_REGISTER.value),
+        method: 'POST',
+        requiresAuth: false,
+        body: {
+          'first_name': firstName,
+          'last_name': lastName,
+          'email': email,
+          'phone_number': phoneNumber,
+          'password': password,
+          'password2': password2,
+        },
+      );
+
+      print('Received response: $responseData');
+
+      // Check if the response contains expected user data
+      if (responseData != null && responseData['id'] != null) {
+        return {}; // Successful registration
+      } else {
+        // Unexpected response format
+        return {
+          'general': ['Unexpected registration response']
+        };
+      }
+    } catch (e) {
+      print('Registration error: $e');
+
+      // More detailed error handling
+      if (e is Exception) {
+        return {
+          'general': [e.toString()]
+        };
+      } else {
+        return {
+          'general': ['An unexpected error occurred during registration']
+        };
+      }
     }
   }
 
