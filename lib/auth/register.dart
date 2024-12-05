@@ -125,16 +125,20 @@ class _GmailRegisterScreenState extends State<GmailRegisterScreen> {
                 _errors = errors;
               });
             } else {
-              Navigator.pushReplacementNamed(
-                context,
-                AuthRoutes.LOGIN.value,
-              );
+              if (context.mounted) {
+                Navigator.pushReplacementNamed(
+                  context,
+                  AuthRoutes.LOGIN.value,
+                );
+              }
             }
           } catch (e) {
-            showSnackBar(
-              context,
-              '${AppLocalizations.of(context)!.registrationFailed} ${e.toString()}',
-            );
+            if (context.mounted) {
+              showSnackBar(
+                context,
+                '${AppLocalizations.of(context)!.registrationFailed} ${e.toString()}',
+              );
+            }
           } finally {
             setState(() {
               _isLoading = false;

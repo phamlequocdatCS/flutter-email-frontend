@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../constants.dart';
-import '../state_management/email_provider.dart';
 import '../utils/validators.dart';
 import '../other_widgets/general.dart';
 import '../views/gmail_base_screen.dart';
@@ -83,9 +82,6 @@ class _GmailLoginScreenState extends State<GmailLoginScreen> {
           () {
             // Normal login success
             if (mounted) {
-              // Provider.of<EmailsProvider>(context, listen: false).fetchEmails(
-              //   forceRefresh: true,
-              // );
               Navigator.pushReplacementNamed(
                 context,
                 MailRoutes.INBOX.value,

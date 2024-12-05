@@ -288,7 +288,10 @@ class AttachmentHandler {
 
   // Mobile download method
   static Future<void> _downloadForMobile(
-      BuildContext context, String fullUrl, String filename) async {
+    BuildContext context,
+    String fullUrl,
+    String filename,
+  ) async {
     // Request storage permissions for Android
     if (Platform.isAndroid) {
       final status = await Permission.storage.request();
